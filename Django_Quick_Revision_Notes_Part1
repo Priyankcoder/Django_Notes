@@ -1,0 +1,100 @@
+Django Notes:
+Some Django Commands Definition:
+First of all,
+
+python manage.py makemigrations appname
+
+will create (migration_number).py files in your app migrations folders. These lines of code are nothing but statements which help in creating actual fields in your respective database similar to SQL statements.
+
+In order to execute the migration which was created using the previous command, we will run the following command,
+
+python manage.py migrate
+
+On migrate your new model fields will be reflected in database if there are no errors
+
+Note:
+When you add/change model methods, then you don't need to run ./manage makemigrations and ./manage.py migrate.
+But whenever you edit your model fields (adding a new one, changing an existing one or altering any of the arguments it takes) then you should always run migrations.
+
+We use {% %} and {{ }} to put python code and python variable html code in django respectively and this is known as jinja formatting. For loop and if statements end with {% endfor %} and {% endif %} in jinja formatting.
+
+Steps to add model fields of a class in django admin panel:
+
+a). Go to the app contaning that model.
+
+b). Go to its admin.py file
+
+c). Import the model
+
+d). write
+
+from django.contrib import admin
+admin.site.register(model_name)
+If you want that a class return a string on calling instead of class type then use dunder (double underscore) str built in function of python.
+
+for eg.
+
+    class album(models.Model):
+        def __str__(self):
+            return self.artist
+Django Imports:
+  from django.db import models
+  from django.http import Http404
+  from django.http import HttpResponse
+  from django.shortcuts import render
+  from django.contrib import admin
+Django Database Query Shell Commands:
+from app.models import album, song (Name of model)
+
+Command to see all objects inside album
+
+album.objects.all()
+Way to create a new object inside album:
+
+1.
+
+a = album(artist="Weeknd",album_title="Star_boy", songn me="star_boy") 
+a.save()
+2.
+
+album.objects.create(artist ="Weeknd", album_title 
+="Star_boy", song = "star_boy")
+To filter an object using an attribute.
+
+album.objects.filter(id = 1)
+   Here id or pk is the default primary use by django, It's like 
+   serial no
+Another eg:
+
+album.objects.filter(artist__startswith='Week')
+Way to get an object from database on a specific attribute:
+
+album.objects.get(artist="Weekend")
+Some other useful commands:
+
+album1 = album.objects.get(pk=1)
+
+album1.song_set.all()   
+This will print all song class objects under album1 object. Note that class name should be in lowercase (song) always.
+
+album1.song_set.create(song_title = 'I love     bacon',file_type='mp3')    
+This will create a song class object under album1 object.
+
+album1.song_set.count()
+This will count the number of song class objects under album1 object.
+
+Django Views
+Rendering
+
+Way to render a template on a request:
+
+1.Define a function in views and on url request, call an view function.
+
+2.Ex. of a view function
+
+def index(request):
+    context = {'all_albums': all_albums}
+    return render(request,
+    'path_to_template('music/index.html'), context)
+      Here, context is a dictionary which replaces the words  in 
+      jinja code with outside values.
