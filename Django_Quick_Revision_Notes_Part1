@@ -1,5 +1,5 @@
-Django Notes:
-Some Django Commands Definition:
+# Django Notes:
+## Some Django Commands Definition:
 First of all,
 
 python manage.py makemigrations appname
@@ -12,89 +12,164 @@ python manage.py migrate
 
 On migrate your new model fields will be reflected in database if there are no errors
 
-Note:
-When you add/change model methods, then you don't need to run ./manage makemigrations and ./manage.py migrate.
+## Note:
+
+1. When you add/change model methods, then you don't need to run ./manage makemigrations and ./manage.py migrate.
+
 But whenever you edit your model fields (adding a new one, changing an existing one or altering any of the arguments it takes) then you should always run migrations.
 
-We use {% %} and {{ }} to put python code and python variable html code in django respectively and this is known as jinja formatting. For loop and if statements end with {% endfor %} and {% endif %} in jinja formatting.
+2. We use {% %} and {{ }} to put python code and python variable html code in django respectively and this is known as jinja formatting.
+For loop and if statements end with {% endfor %} and {% endif %} in jinja formatting.
 
-Steps to add model fields of a class in django admin panel:
+3. Steps to add model fields of a class in django admin panel:
 
-a). Go to the app contaning that model.
+  a). Go to the app contaning that model.
 
-b). Go to its admin.py file
+  b). Go to its admin.py file 
 
-c). Import the model
+  c). Import the model
 
-d). write
+  d). write
 
-from django.contrib import admin
-admin.site.register(model_name)
-If you want that a class return a string on calling instead of class type then use dunder (double underscore) str built in function of python.
+		from django.contrib import admin
+		admin.site.register(model_name)
+
+4. If you want that a class return a string on calling instead of class type then use dunder (double underscore) str built in function of python.
 
 for eg.
+		
+		class album(models.Model):
+			def __str__(self):
+				return self.artist
 
-    class album(models.Model):
-        def __str__(self):
-            return self.artist
-Django Imports:
-  from django.db import models
-  from django.http import Http404
-  from django.http import HttpResponse
-  from django.shortcuts import render
-  from django.contrib import admin
-Django Database Query Shell Commands:
-from app.models import album, song (Name of model)
+5. Regex to extract serial number (integer value) from url:
 
-Command to see all objects inside album
+		r'^(?P<album_id>[0-9]+)/$'
 
-album.objects.all()
-Way to create a new object inside album:
+    Here, ^ (carrot sign) and $ represents starting and ending of regex. 
 
-1.
+6.  Shortcut way to rise 404 Error:
 
-a = album(artist="Weeknd",album_title="Star_boy", songn me="star_boy") 
-a.save()
-2.
+	from django.shortcuts import get_object_or_404
+	album = get_object_or_404(Album , pk = album_id)
+        
+It will throw a message of Not found error on screen if album doesn't exists inside database.  
 
-album.objects.create(artist ="Weeknd", album_title 
-="Star_boy", song = "star_boy")
-To filter an object using an attribute.
 
-album.objects.filter(id = 1)
-   Here id or pk is the default primary use by django, It's like 
-   serial no
-Another eg:
+## Django Imports:
 
-album.objects.filter(artist__startswith='Week')
-Way to get an object from database on a specific attribute:
+	  from django.db import models
+	  from django.http import Http404
+	  from django.http import HttpResponse
+	  from django.shortcuts import render
+	  from django.contrib import admin
 
-album.objects.get(artist="Weekend")
-Some other useful commands:
+## Django Database Query Shell Commands:
+- from app.models import album, song (Name of model)
+- Command to see all objects inside album
 
-album1 = album.objects.get(pk=1)
+		album.objects.all()
 
-album1.song_set.all()   
-This will print all song class objects under album1 object. Note that class name should be in lowercase (song) always.
+- Way to create a new object inside album:
 
-album1.song_set.create(song_title = 'I love     bacon',file_type='mp3')    
-This will create a song class object under album1 object.
+    1.
 
-album1.song_set.count()
-This will count the number of song class objects under album1 object.
+		a = album(artist="Weeknd",album_title="Star_boy", songn	me="star_boy") 
+		a.save()
 
-Django Views
-Rendering
+    2.
 
-Way to render a template on a request:
+		album.objects.create(artist ="Weeknd", album_title 
+		="Star_boy", song = "star_boy")
 
-1.Define a function in views and on url request, call an view function.
+- To filter an object using an attribute.
 
-2.Ex. of a view function
+		album.objects.filter(id = 1)
+	
+               Here id or pk is the default primary use by django, It's like 
+               serial no
+      
+        Another eg:
 
-def index(request):
-    context = {'all_albums': all_albums}
-    return render(request,
-    'path_to_template('music/index.html'), context)
-      Here, context is a dictionary which replaces the words  in 
-      jinja code with outside values.
+		album.objects.filter(artist__startswith='Week')
+
+- Way to get an object from database on a specific attribute:
+
+		album.objects.get(artist="Weekend")
+
+- Some other useful commands:
+
+		album1 = album.objects.get(pk=1)
+
+		album1.song_set.all()   
+
+   This will print all song class objects
+   under album1 object.
+   Note that class name should be in lowercase (song) always.
+
+		album1.song_set.create(song_title = 'I love 	bacon',file_type='mp3')    
+
+ This will create a song class object
+ under album1 object.
+
+		album1.song_set.count()
+
+ This will count the number of song class objects under
+ album1 object.
+
+
+## Django Views
+
+- Rendering
+
+    Way to render a template on a request:
+
+     1.Define a function in views and on url request, call an view 
+     function.
+
+    2.Ex. of a view function
+      
+		def index(request):
+			context = {'all_albums': all_albums}
+			return render(request,
+			'path_to_template('music/index.html'), context)
+            
+                  Here, context is a dictionary which replaces the words  in 
+                  jinja code with outside values  or data
+             
+                 
+## Using Dynamic Url
+  Pass the url by name instead of url pattern. This will do the future 
+  proofing. For eg, If you want to change the url patterns then you 
+  have to modified it only at one place instead of passing it to every 
+  point.
+  Eg. of  Dynamic url passing:
+
+		{% url 'detail' album.id %}
+		
+		where detail is the url name and album.id is replacing the v
+		ariable with value
+
+ Where urlpatterns is:
+
+		url(r'^(?P<album_id>[0-9]+)/$', views.detail, 
+                name='detail')
+
+But, if more than one url pattern of different app has same name then we have to use namespace standard
+we pass an statement in urls.py file of the app as follows:
+
+		app_name = 'music'
+
+Now, modified dynamic url passing is as follows:
+
+		{% url 'music:detail' album.id %}
+
+This will tell django that it has to see url name 'detail'  inside music app.
+
+
+                     
+
+  
+
+ 
+
